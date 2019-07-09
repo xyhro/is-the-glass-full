@@ -95,7 +95,6 @@ def is_it_full():
     submit_button = driver.find_elements_by_xpath('//*[@id="searchform"]/fieldset/div[4]/div/button')[0]
     submit_button.click()
     html = driver.page_source
-    driver.close()
     soup = BeautifulSoup(html, 'lxml')
     courses = soup.find_all('div', class_='span12')[0]  # whole results table everything
     coursesectionsx = courses.find_all('table', class_='table table-striped')[coursetarget]
