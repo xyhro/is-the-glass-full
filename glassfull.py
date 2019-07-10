@@ -12,6 +12,7 @@ import lxml
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import random
+import smtplib, ssl
 
 options = Options()
 options.headless = True
@@ -28,6 +29,13 @@ elif userPlatform == "Windows":
 else:
     print("ERROR: user platform undefined")
     sys.exit()
+
+# Create secure connection to gmail
+port = 465
+password = input("Please enter the password for istheglassfull@gmail.com: ")
+context = ssl.create_default_context()
+senderEmail = "istheglassfull@gmail.com"
+recieverEmail = input("Please enter your email address: ")
 
 url_target = "https://studentservices.uwo.ca/secure/timetables/mastertt/ttindex.cfm"
 driver.get(url_target)  # get to the website
@@ -95,7 +103,6 @@ def is_it_full():
     submit_button = driver.find_elements_by_xpath('//*[@id="searchform"]/fieldset/div[4]/div/button')[0]
     submit_button.click()
     html = driver.page_source
-    driver.close()
     soup = BeautifulSoup(html, 'lxml')
     courses = soup.find_all('div', class_='span12')[0]  # whole results table everything
     coursesectionsx = courses.find_all('table', class_='table table-striped')[coursetarget]
@@ -118,6 +125,9 @@ def checkfull():
         checkfull()
     else:
         print('ITS OPEN' + '  ' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
+        with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+            server.login(senderEmail, password)
+            server.sendmail(senderEmail, recieverEmail, "Your desired course has opened!")
         if userPlatform == "Windows":
             winsound.PlaySound('SystemHand', winsound.SND_ASYNC + winsound.SND_LOOP)
         else:
