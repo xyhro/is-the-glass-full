@@ -24,7 +24,7 @@ if userPlatform == "Linux":
 elif userPlatform == "Darwin":
     driver = webdriver.Chrome(r'./chromedriverMac', options=options)
 elif userPlatform == "Windows":
-    scriptDir = os.path.dirname(__file__)
+    scriptDir = os.getcwd()
     driver = webdriver.Chrome(r'{0}\chromedriver.exe'.format(str(scriptDir)), options=options)
 else:
     print("ERROR: user platform undefined")
